@@ -34,29 +34,28 @@ def TESTupdateAllowedK():
     checkHowManyDependancies = howManyDependancies
     checkHowManyDependancies[2] = 0
     updateAllowedK(D, howManyDependancies, nextTask, allowedK)
-    assert allowedK == {3, 4, 5, 7}, "ERROR"
-    assert howManyDependancies == checkHowManyDependancies, "ERROR"
+    assert allowedK == {3, 4, 5, 7}, "ERROR TEST 1"
+    assert howManyDependancies == checkHowManyDependancies, "ERROR TEST 1"
     print("SUCCESS")
 
     print("TEST 2: ", end = "")
     nextTask = 4
     updateAllowedK(D, howManyDependancies, nextTask, allowedK)
-    assert allowedK == {3, 5, 7, 6}, "ERROR"
-
     checkHowManyDependancies = howManyDependancies
     checkHowManyDependancies[4] = 0
-    assert howManyDependancies == checkHowManyDependancies, "ERROR"
+    assert allowedK == {3, 5, 7, 6}, "ERROR TEST 2"
+    assert howManyDependancies == checkHowManyDependancies, "ERROR TEST 2"
     print("SUCCESS")
 
     print("TEST 3: ", end = "")
     nextTask = 6
     updateAllowedK(D, howManyDependancies, nextTask, allowedK)
-    assert allowedK == {3, 5, 7}, "ERROR"
-
     checkHowManyDependancies = howManyDependancies
     checkHowManyDependancies[6] = 0
-    assert howManyDependancies == checkHowManyDependancies, "ERROR"
+    assert allowedK == {3, 5, 7}, "ERROR TEST 3"
+    assert howManyDependancies == checkHowManyDependancies, "ERROR TEST 3"
     print("SUCCESS")
+    
     print("---------- ENDING TEST: updateAllowedK ----------")
 
 def test():
