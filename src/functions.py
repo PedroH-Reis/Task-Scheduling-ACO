@@ -8,3 +8,4 @@ def updateAllowedK(D, howManyDependancies, nextTask, allowed):
         howManyDependancies[task] -= 1
         if howManyDependancies[task] == 0:
             allowed.add(task)
+            
