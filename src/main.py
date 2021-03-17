@@ -62,7 +62,7 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
             for task in (numberOfTasks - 1):
                 nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX) # Theodore and Pedro
                 updateAllowedK() # Theodore and Pedro
-                antX[nextTask, nextProcessor] = 1
+                antX[nextProcessor].append(nextTask)
 
             antL = costFunction(antX, ET) # Eylul
             if antL < L:
