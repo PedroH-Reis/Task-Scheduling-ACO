@@ -59,4 +59,7 @@ def TESTupdateAllowedK():
     print("SUCCESS")
     print("---------- ENDING TEST: updateAllowedK ----------")
 
-TESTupdateAllowedK()
+def test():
+    TESTupdateAllowedK()
+
+test()
