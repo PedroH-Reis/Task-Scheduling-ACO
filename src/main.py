@@ -1,25 +1,25 @@
 def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
-	D, ET, initialAllowed, numberOfTasks = initializeDependancyAndExecutionTimeMatrizes(jsonPath) # Matheus
-	eta = definingEta(ET) # Matheus
-	pheromone = initializePheromone(ET) # Matheus
-	
-	# The solution
-	x = np.ndarray((numberOfTasks, numberOfProcessors), int)
-	L = float("inf")
+ 	D, ET, initialAllowed, numberOfTasks = initializeDependancyAndExecutionTimeMatrizes(jsonPath) # Matheus
+ 	eta = definingEta(ET) # Matheus
+ 	pheromone = initializePheromone(ET) # Matheus
 
-	for iter in range(iterMAX):
+ 	# The solution
+ 	x = np.ndarray((numberOfTasks, numberOfProcessors), int)
+ 	L = float("inf")
 
-		for ant in numberOfAnts:
-			allowed = initialAllowed
-			antX = initializeAnt(initialAllowed) # Eylul
+ 	for iter in range(iterMAX):
 
-			for task in numberOfTasks:
-				nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX) # Theodore and Pedro
-				updateAllowedK() # Theodore and Pedro
-				antX[nextTask, nextProcessor] = 1
+ 		for ant in numberOfAnts:
+ 			allowed = initialAllowed
+ 			antX = initializeAnt(initialAllowed) # Eylul
 
-			antL = costfunction(antX, ET) # Eylul
-			if antL < L:
-				x = antX
-				L = antL
-			updatePheromone(pheromone, rho, antX, ET) # Yasmine
+ 			for task in numberOfTasks:
+ 				nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX) # Theodore and Pedro
+ 				updateAllowedK() # Theodore and Pedro
+ 				antX[nextTask, nextProcessor] = 1
+
+ 			antL = costfunction(antX, ET) # Eylul
+ 			if antL < L:
+ 				x = antX
+ 				L = antL
+ 			updatePheromone(pheromone, rho, antX, ET) # Yasmine 
