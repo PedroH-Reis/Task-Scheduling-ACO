@@ -1,4 +1,4 @@
-from functions import updateAllowedK
+from functions import *
 
 def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 	D, howManyDependancies, ET, initialAllowed, numberOfTasks = initializeDependancyAndExecutionTimeMatrizes(jsonPath) # Matheus
@@ -14,11 +14,12 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 	for iter in range(iterMAX):
 		for ant in numberOfAnts:
 			allowed = initialAllowed
-			antX = initializeAnt(allowed) # Eylul
+			taskId, antX = initializeAnt(allowed, numberOfProcessors) # Eylul
+			updateAllowedK(D, howManyDependencies, taskId, allowed)
 
 			for task in numberOfTasks:
 				nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX) # Theodore and Pedro
-				updateAllowedK(D, howManyDependancies, nextTask, allowedTasks) # Theodore and Pedro
+				updateAllowedK(D, howManyDependancies, nextTask, allowed) # Theodore and Pedro
 				antX[nextProcessor].append(nextTask)
 
 			antL = costfunction(antX, ET) # Eylul

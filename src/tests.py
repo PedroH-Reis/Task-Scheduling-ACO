@@ -1,5 +1,34 @@
 from functions import updateAllowedK
 
+
+def TESTinitializeAnt():
+
+    # Initialization test
+    allowedTasks = ["A", "B", "C", "D"]
+    numberOfProcessors = 10
+    taskId, antX = initializeAnt(allowedTasks, numberOfProcessors)
+    print(taskId)
+    print(antX)
+
+
+def TESTcostFunction():
+
+    # Cost function test
+    antX = {
+        1: ["A", "B"],
+        2: ["C", "D"]
+    }
+
+    ET = {
+        "A": 35,
+        "B": 30,
+        "C": 40,
+        "D": 10
+    }
+
+    print("Max execution time: ", costFunction(antX, ET))
+
+
 def TESTupdateAllowedK():
     print("---------- STARTING TEST: updateAllowedK ----------")
 
