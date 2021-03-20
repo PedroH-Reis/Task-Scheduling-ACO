@@ -17,7 +17,7 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 			taskId, antX = initializeAnt(allowed, numberOfProcessors) # Eylul
 			updateAllowedK(D, howManyDependencies, taskId, allowed)
 
-			for task in numberOfTasks:
+			while len(allowed)>0 :
 				nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, x) # Theodore and Pedro
 				updateAllowedK(D, howManyDependancies, nextTask, allowed) # Theodore and Pedro
 				antX[nextProcessor].append(nextTask)
