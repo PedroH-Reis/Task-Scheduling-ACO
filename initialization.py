@@ -1,6 +1,7 @@
 """"
 eta nTask x nProcess
 """
+import numpy as np
 
 import json
 
@@ -30,9 +31,13 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, numberOfProcess
     
 
     eta = sum_time/nTaks
-    print(eta)
+    initializionPheromone = (1/eta)*np.ones((nTaks,nTaks))
+    
+    initializionPheromone = {i: {j:(1/eta) for j in keys} for i in keys}
+    eta = {i: {j:eta for j in keys} for i in keys}
+    # print(eta)
 
-    return D,ET, intialAllowed, nTaks, dependenciesCount, eta
+    return D,ET, intialAllowed, nTaks, dependenciesCount, eta, initializionPheromone
 
 
 def initializePheromone(ET):
