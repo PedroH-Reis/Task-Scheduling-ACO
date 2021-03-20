@@ -56,16 +56,19 @@ def costFunction(antX, ET):
 # PARAM: allowed => A set that contains the next tasks that can be proceeded
 # PARAM: x => a dictionnary where the keys are the processors and the values the tasks that are executed on the processor
 
-def selectTheNextRoute(pheromone, allowed, x):
+def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, x):
     processors = x.keys()
     indexes = []
-    for allowed_i in allowed:
+    proba_ind = []
+
+    for task in allowed:
         for processor in processors:
-            indexes.append([allowed_i, processor])
+            indexes.append([task, processor])
+            proba = (pheromone[task][processor] ** alpha * eta[task][processor] ** beta)
+            proba_ind.append(proba)
 
-    pheromone_ind = np.array([pheromone[i[0]][i[1]] for i in indexes])
-    pheromone_ind = pheromone_ind / (np.sum(pheromone_ind))
-
-    next_task, next_processor = random.choices(indexes, pheromone_ind)
+    proba_ind = np.array(proba_ind)/(np.sum(proba_ind))
+        
+    next_task, next_processor = random.choices(indexes, proba_ind)
 
     return (next_task, next_processor)
