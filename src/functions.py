@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 # PARAM: D => A dict with the information between task dependancy
 # PARAM: howManyDependancies => A dict with the information about how many dependancies has a task
@@ -50,10 +51,12 @@ def costFunction(antX, ET):
 
     return maxET
 
-import random
-import numpy as np
 
-def selectTheNextRoute(pheromone, allowed, x= 0):
+# PARAM: pheromone => A matrix where pheromone[i][j] contains the pheromone for task i on processor j
+# PARAM: allowed => A set that contains the next tasks that can be proceeded
+# PARAM: x => a dictionnary where the keys are the processors and the values the tasks that are executed on the processor
+
+def selectTheNextRoute(pheromone, allowed, x):
     processors = x.keys()
     indexes = []
     for allowed_i in allowed:
