@@ -1,10 +1,8 @@
 from functions import *
+from initialization_utils import initializeDependancyAndExecutionTimeMatrizes
 
 def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
-	D, howManyDependancies, ET, initialAllowed, numberOfTasks = initializeDependancyAndExecutionTimeMatrizes(jsonPath) # Matheus
-	eta = definingEta(ET) #Matheus
-	pheromone = initializePheromone(ET) # Matheus
-	
+	D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, numberOfProcessors) # Matheus
 	# The solution
 	x = {}
 	for processors in numberOfProcessors:
