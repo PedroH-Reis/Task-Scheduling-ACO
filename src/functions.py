@@ -73,3 +73,13 @@ def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, x):
 
     return (next_task, next_processor)
 
+def _update_pheromone(pheromone, rho, allowed, ET,L,antX,numberofTasks,Q):
+    pheromone_delta = [[0 for j in range( numberOfTasks)] for i in range(numberOfTasks)]
+    for i in ET:
+        for j in allowed:
+            if i in antX and j in antX:
+                pheromone_delta[i][j] = Q/L
+            else:
+                pheromone_delta[i][j] = 0
+        pheromone[i][j] *= 1-rho
+        pheromone[i][j] += pheromone_delta[i][j]
