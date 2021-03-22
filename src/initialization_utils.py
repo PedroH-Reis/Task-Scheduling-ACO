@@ -33,7 +33,7 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, numberOfProcess
     
     mean_time = sum_time/nTaks
 
-    initializionPheromone = {i: {j:mean_time for j in keys} for i in keys}
+    initializionPheromone = {i: {j:(1/mean_time) for j in keys} for i in keys}
     
 
     return D, dependenciesCount ,ET, intialAllowed, nTaks,  eta, initializionPheromone
