@@ -39,16 +39,6 @@ def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, 
 
 
 
-            
-
-
-def updateEta(howManyDependancies, nextTask, allowed, eta):
-    global D #D and Dp are constants and so we can set them as global variables so that we avoid loading them
-    global Dp
-    if howManyDependancies[nextTask] == 0: #We then update eta
-        for task in D[nextTask]:
-            #We have to 
-
 # Chooses a random initially allowed task and assigns it randomly to a processor
     # allowedTasks -> a set of tasks with no dependency
     # numberOfProcessors -> the number of processors available
