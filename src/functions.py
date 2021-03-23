@@ -1,17 +1,53 @@
 import random
 import numpy as np
 
-# PARAM: D => A dict with the information between task dependancy
+# PARAM: global D constant => A dict with the information between task dependancy
+# PARAM: global Dp constant => Reverse D
+# PARAM: taskInfos => A dict, start time, end time, processor for each task
+# PARAM: processorInfos => A dict, end exec time for each processor
+# PARAM: schedule => mapping processor => list of tasks. Final solution
 # PARAM: howManyDependancies => A dict with the information about how many dependancies has a task
 # PARAM: nextTask => The nextTask is the last task mapped
-# PARAM: allowed => The set to be actualized
-def updateAllowedK(D, howManyDependancies, nextTask, allowed):
-    allowed.remove(nextTask)
+# PARAM: allowed => The dictionnary to be actualized, contains task name -> (min) start time
+# PARAM: eta => eta parameter
+def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos):
+    global D # D is constant
+    global Dp # constant too
+    global ET # constant
+    del allowed[nextTask]
+
+    #before adding a task to the allowed vector, we have to update eta for the current allowed tasks according to the new end time of nextProcessor
+    for task in allowed:
+        #We have to take into account the begin execution time for the tasks in allowed
+        eta[task, nextProcessor] = 1/(max(processorInfos[nextProcessor], taskInfos[task]["begin_time"]) + ET[task])
+
     for task in D[nextTask]:
         howManyDependancies[task] -= 1
         if howManyDependancies[task] == 0:
-            allowed.add(task)
 
+            #Eta update.
+            for processor in processorInfos:
+                beginTaskTime = 0
+
+                for parentTask in Dp[task]: #we look for the parent tasks to find the begin execution time
+                    beginTaskTime = max(beginTaskTime, taskInfos[nextTask]["end_time"])
+                
+
+                allowed[task] = beginTaskTime #we add the begin task time to the allowed vector
+
+                eta[task, processor] = 1/(max(processorInfos[processor], beginTaskTime) + ET[task]) #We have to take into account the allowed execution time for the processor.
+
+
+
+            
+
+
+def updateEta(howManyDependancies, nextTask, allowed, eta):
+    global D #D and Dp are constants and so we can set them as global variables so that we avoid loading them
+    global Dp
+    if howManyDependancies[nextTask] == 0: #We then update eta
+        for task in D[nextTask]:
+            #We have to 
 
 # Chooses a random initially allowed task and assigns it randomly to a processor
     # allowedTasks -> a set of tasks with no dependency
@@ -20,14 +56,13 @@ def updateAllowedK(D, howManyDependancies, nextTask, allowed):
     # taskId: assigned task's id
     # antX: dict with (processorId, [taskId])
 def initializeAnt(allowedTasks, numberOfProcessors):
-
     taskId = random.choice(list(allowedTasks))
     processorId = random.randint(1, numberOfProcessors)
     antX = {
         processorId: [taskId]
     } 
 
-    return taskId, antX
+    return taskId, processorId, antX
 
 
 # Calculates the total execution time of a list of task IDs.
@@ -56,22 +91,26 @@ def costFunction(antX, ET):
 # PARAM: allowed => A set that contains the next tasks that can be proceeded
 # PARAM: x => a dictionnary where the keys are the processors and the values the tasks that are executed on the processor
 
-def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, x):
-    processors = x.keys()
+def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos):
+    processors = processorInfos.keys()
     indexes = []
-    proba_ind = []
+    probaInd = []
 
     for task in allowed:
         for processor in processors:
             indexes.append([task, processor])
-            proba = (pheromone[task][processor] ** alpha * eta[task][processor] ** beta)
-            proba_ind.append(proba)
+            proba = (pheromone[task][processor] ** alpha * eta[task][processor] ** beta) #Maybe we should normalize eta so that it doesn't become too small
+            probaInd.append(proba)
 
-    proba_ind = np.array(proba_ind)/(np.sum(proba_ind))
+    probaInd = np.array(probaInd)/(np.sum(probaInd))
         
-    next_task, next_processor = random.choices(indexes, proba_ind)
+    nextTask, nextProcessor = random.choices(indexes, probaInd)
 
-    return (next_task, next_processor)
+    #We have to update the taskInfos and ProcessorInfos vectors
+    taskInfos[nextTask] = {"start_time": (max(allowed[nextTask], processorInfos)), "processor":nextProcessor}
+    taskInfos[nextTask] = {"end_time" : (taskInfos[nextTask] + ET[nextTask])}
+    
+    return (nextTask, nextProcessor)
 
 def _update_pheromone(pheromone, rho, allowed, ET,L,antX,numberofTasks,Q):
     pheromone_delta = [[0 for j in range( numberOfTasks)] for i in range(numberOfTasks)]

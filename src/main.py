@@ -2,7 +2,7 @@ from functions import *
 from initialization_utils import initializeDependancyAndExecutionTimeMatrizes
 
 def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
-	D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, numberOfProcessors) # Matheus
+	D, Dp, taskInfos, processorInfos, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, numberOfProcessors) # Matheus
 	# The solution
 	x = {}
 	for processors in numberOfProcessors:
@@ -12,12 +12,12 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 	for iter in range(iterMAX):
 		for ant in numberOfAnts:
 			allowed = initialAllowed
-			taskId, antX = initializeAnt(allowed, numberOfProcessors) # Eylul
-			updateAllowedK(D, howManyDependencies, taskId, allowed)
+			taskId, processorId, antX = initializeAnt(allowed, numberOfProcessors) # Eylul
+			updateVariables(howManyDependancies, taskId, processorId, allowed, eta, taskInfos, processorInfos)
 
 			while len(allowed)>0 :
-				nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, x) # Theodore and Pedro
-				updateAllowedK(D, howManyDependancies, nextTask, allowed) # Theodore and Pedro
+				nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos) # Theodore and Pedro
+				updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos) # Theodore and Pedro
 				antX[nextProcessor].append(nextTask)
 
 			antL = costfunction(antX, ET) # Eylul
