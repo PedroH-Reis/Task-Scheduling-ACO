@@ -13,19 +13,22 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, numberOfProcess
     intialAllowed = []
     sum_time = 0
     eta = {}
+    D_1 = {}
     for i in keys:
         actual = data['nodes'][i]
+        i = int(i)
         dependenciesCount[i] = len(actual['Dependencies'])
         timeSplitted = actual["Data"].split(":")
         time = 3600*float(timeSplitted[0]) + 60*float(timeSplitted[1]) + float(timeSplitted[2])
         sum_time += time
         ET[i] = [time for i in range(numberOfProcessors)]
+        D_1[i] = [int(i) for i in actual['Dependencies']]
         for j in range(numberOfProcessors):
             if j not in eta:
                 eta[j] = {}
             eta[j][i] = 1/time
         if(dependenciesCount[i] == 0):
-            intialAllowed.append(i)
+            intialAllowed.append((i, 0))
         for j in actual['Dependencies']:
             if(j not in D):
                 D[j] = []
@@ -36,5 +39,5 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, numberOfProcess
     initializionPheromone = {i: {j:(1/mean_time) for j in keys} for i in keys}
     
 
-    return D, dependenciesCount ,ET, intialAllowed, nTaks,  eta, initializionPheromone
+    return D, dependenciesCount ,ET, intialAllowed, nTaks,  eta, initializionPheromone, D_1
 
