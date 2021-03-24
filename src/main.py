@@ -25,3 +25,7 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 				x = antX
 				L = antL
 			updatePheromone(pheromone, rho, antX, ET) # Yasmine
+
+	return x
+
+print(exec(r"./data/tasks.json", 15, 10, 10, 0.1, 0.1, 0.1))
