@@ -24,4 +24,5 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 			if antL < L:
 				x = antX
 				L = antL
-			updatePheromone(pheromone, rho, antX, ET) # Yasmine
+			
+			update_pheromone(pheromone, rho, allowed, ET,L,antX,numberofTasks) # Yasmine
