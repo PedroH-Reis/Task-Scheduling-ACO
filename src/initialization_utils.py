@@ -10,7 +10,7 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, numberOfProcess
     D = {}
     ET = {}
     dependenciesCount = {}
-    intialAllowed = []
+    intialAllowed = {}
     sum_time = 0
     eta = {}
     D_1 = {}
@@ -28,7 +28,7 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, numberOfProcess
                 eta[j] = {}
             eta[j][i] = 1/time
         if(dependenciesCount[i] == 0):
-            intialAllowed.append((i, 0))
+            intialAllowed[i] = 0
         for j in actual['Dependencies']:
             if(j not in D):
                 D[j] = []
