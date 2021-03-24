@@ -12,7 +12,7 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 	for iter in range(iterMAX):
 		for ant in numberOfAnts:
 			allowed = initialAllowed
-			taskId, processorId, antX = initializeAnt(allowed, numberOfProcessors) # Eylul
+			taskId, processorId, antX, taskInfos, processorInfos = initializeAnt(ET, allowed, numberOfProcessors) # Eylul
 			updateVariables(howManyDependancies, taskId, processorId, allowed, eta, taskInfos, processorInfos)
 
 			while len(allowed)>0 :
@@ -20,7 +20,7 @@ def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
 				updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos) # Theodore and Pedro
 				antX[nextProcessor].append(nextTask)
 
-			antL = costfunction(antX, ET) # Eylul
+			antL = costfunction(processorInfos) # Eylul
 			if antL < L:
 				x = antX
 				L = antL
