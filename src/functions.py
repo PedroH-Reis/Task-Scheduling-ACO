@@ -19,7 +19,7 @@ def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, 
     #before adding a task to the allowed vector, we have to update eta for the current allowed tasks according to the new end time of nextProcessor
     for task in allowed:
         #We have to take into account the begin execution time for the tasks in allowed
-        eta[task, nextProcessor] = 1/(max(processorInfos[nextProcessor], taskInfos[task]["begin_time"]) + ET[task])
+        eta[task][nextProcessor] = 1/(max(processorInfos[nextProcessor], taskInfos[task]["begin_time"]) + ET[task])
 
     for task in D[nextTask]:
         howManyDependancies[task] -= 1
@@ -35,7 +35,7 @@ def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, 
 
                 allowed[task] = beginTaskTime #we add the begin task time to the allowed vector
 
-                eta[task, processor] = 1/(max(processorInfos[processor], beginTaskTime) + ET[task]) #We have to take into account the allowed execution time for the processor.
+                eta[task][processor] = 1/(max(processorInfos[processor], beginTaskTime) + ET[task]) #We have to take into account the allowed execution time for the processor.
 
 
 
@@ -99,6 +99,7 @@ def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, pr
     #We have to update the taskInfos and ProcessorInfos vectors
     taskInfos[nextTask] = {"start_time": (max(allowed[nextTask], processorInfos)), "processor":nextProcessor}
     taskInfos[nextTask]["end_time"] = (taskInfos[nextTask] + ET[nextTask])}
+    processorInfos[nextProcessor] = taskInfos[nextTask]["end_time"] 
     
     return (nextTask, nextProcessor)
 
