@@ -1,6 +1,7 @@
 from functions import *
 from initialization_utils import initializeDependancyAndExecutionTimeMatrizes
 import copy
+from tqdm import tqdm
 
 def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
     D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, processorList) # Matheus
@@ -10,8 +11,8 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
         x[processors] = []
     L = float("inf")
 
-    for iter in range(iterMax):    
-        for ant in range(numberOfAnts):
+    for iter in tqdm(range(iterMax)):    
+        for ant in tqdm(range(numberOfAnts)):
             allowed = copy.deepcopy(initialAllowed)
             ant_dependancies = copy.deepcopy(howManyDependancies)
             taskId, processorId, antX, taskInfos, processorInfos = initializeAnt(ET, allowed, processorList) # Eylul
@@ -26,12 +27,11 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
             if antL < L:
                 x = copy.deepcopy(antX)
                 L = antL
-                print(antL)
+                # print(antL)
                 
-    update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos)
+        update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos)
 	
     return x
 
-print(exec(r"./data/smallRandom.json", 15, range(1, 10), 10, 0.1, 0.1, 0.1))
 			
 			
