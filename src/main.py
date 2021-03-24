@@ -1,34 +1,37 @@
 from functions import *
 from initialization_utils import initializeDependancyAndExecutionTimeMatrizes
+import copy
 
-def exec(jsonPath, numberOfAnts, numberOfProcessors, iterMax, alpha, beta, rho):
-	D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, numberOfProcessors) # Matheus
-	# The solution
-	x = {}
-	for processors in range(numberOfProcessors):
-		x[processors] = []
-	L = float("inf")
+def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
+    D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, processorList) # Matheus
+    # The solution
+    x = {}
+    for processors in processorList:
+        x[processors] = []
+    L = float("inf")
 
-	for iter in range(iterMax):
-		for ant in range(numberOfAnts):
-			allowed = initialAllowed
-			taskId, processorId, antX, taskInfos, processorInfos = initializeAnt(ET, allowed, numberOfProcessors) # Eylul
-			updateVariables(howManyDependancies, taskId, processorId, allowed, eta, taskInfos, processorInfos, D, Dp, ET)
+    for iter in range(iterMax):    
+        for ant in range(numberOfAnts):
+            allowed = copy.deepcopy(initialAllowed)
+            ant_dependancies = copy.deepcopy(howManyDependancies)
+            taskId, processorId, antX, taskInfos, processorInfos = initializeAnt(ET, allowed, processorList) # Eylul
+            updateVariables(ant_dependancies, taskId, processorId, allowed, eta, taskInfos, processorInfos, D, Dp, ET)
 
-			while len(allowed)>0 :
-				nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos) # Theodore and Pedro
-				updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET) # Theodore and Pedro
-				antX[nextProcessor].append(nextTask)
+            while len(allowed)>0 :
+                nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos, ET) # Theodore and Pedro
+                updateVariables(ant_dependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET) # Theodore and Pedro
+                antX[nextProcessor].append(nextTask)
 
-			antL = costfunction(processorInfos) # Eylul
-			if antL < L:
-				x = antX
-				L = antL
-			update_pheromone(pheromone, rho, allowed, ET,L,antX,numberofTasks) # Yasmine
+            antL = costFunction(processorInfos) # Eylul
+            if antL < L:
+                x = copy.deepcopy(antX)
+                L = antL
+                print(antL)
+                
+    update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos)
+	
+    return x
 
-
-	return x
-
-print(exec(r"./data/tasks.json", 15, 10, 10, 0.1, 0.1, 0.1))
+print(exec(r"./data/smallRandom.json", 15, range(1, 10), 10, 0.1, 0.1, 0.1))
 			
 			
