@@ -45,34 +45,37 @@ def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, 
 # returns:
     # taskId: assigned task's id
     # antX: dict with (processorId, [taskId])
-def initializeAnt(allowedTasks, numberOfProcessors):
+def initializeAnt(ET, allowedTasks, numberOfProcessors):
+
     taskId = random.choice(list(allowedTasks))
     processorId = random.randint(1, numberOfProcessors)
+
     antX = {
         processorId: [taskId]
-    } 
+    }
 
-    return taskId, processorId, antX
+    taskInfos = {
+        taskId: {
+            'start_time': 0,
+            'end_time': ET[taskId][processorId],
+            'processor': processorId
+        }
+    }
 
+    processorInfos = {
+        processorId: ET[taskId][processorId]
+    }
 
-# Calculates the total execution time of a list of task IDs.
-def calculateET(taskList, ET):
-
-    sum = 0
-    for task in taskList:
-        sum += ET[task]
-    
-    return sum
+    return taskId, processorId, antX, taskInfos, processorInfos
 
 
 # Calculates the maximum execution time between all processors.
-def costFunction(antX, ET):
+def costFunction(processorInfos):
 
     maxET = 0
-    for processor, taskList in antX.items():
-        currentET = calculateET(taskList, ET)
-        if currentET > maxET:
-            maxET = currentET
+    for processor, ET in processorInfos.items():
+        if ET > maxET:
+            maxET = ET
 
     return maxET
 
