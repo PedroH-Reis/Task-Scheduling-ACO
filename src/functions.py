@@ -10,10 +10,7 @@ import numpy as np
 # PARAM: nextTask => The nextTask is the last task mapped
 # PARAM: allowed => The dictionnary to be actualized, contains task name -> (min) start time
 # PARAM: eta => eta parameter
-def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos):
-    global D # D is constant
-    global Dp # constant too
-    global ET # constant
+def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET):
     del allowed[nextTask]
 
     #before adding a task to the allowed vector, we have to update eta for the current allowed tasks according to the new end time of nextProcessor
