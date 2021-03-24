@@ -1,5 +1,4 @@
 import ijson
-import json
 import random
 
 def initialize(jsonName):
