@@ -94,11 +94,11 @@ def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, pr
 
     probaInd = np.array(probaInd)/(np.sum(probaInd))
         
-    nextTask, nextProcessor = random.choices(indexes, probaInd)
+    nextTask, nextProcessor = random.choices(indexes, probaInd)[0]
 
     #We have to update the taskInfos and ProcessorInfos vectors
     taskInfos[nextTask] = {"start_time": (max(allowed[nextTask], processorInfos)), "processor":nextProcessor}
-    taskInfos[nextTask] = {"end_time" : (taskInfos[nextTask] + ET[nextTask])}
+    taskInfos[nextTask]["end_time"] = (taskInfos[nextTask] + ET[nextTask])}
     
     return (nextTask, nextProcessor)
 
