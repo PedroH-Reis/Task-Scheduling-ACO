@@ -16,6 +16,7 @@ def exec(jsonName, numberOfProcessors):
     L = costFunction(x)
     return L, x
 
-L, x = exec("test.json", 10)
+L, x = exec("test.json", 2)
 
+print(json.dumps(x, indent = 4))
 print(L)

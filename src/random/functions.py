@@ -1,27 +1,26 @@
-import ijson
+import json
 import random
 
 def initialize(jsonName):
-
     ET = {}
     D = {}
     allowedTasks = set()
 
-    with open("../data/" + jsonName, 'r') as file:
-        graph = ijson.items(file, "nodes")
-        
-        for tasks in graph:
-            for task in tasks:
-                splitData = tasks[task]["Data"].split(":")
+    with open("../data/" + jsonName, "r") as file:
+        data = json.load(file)
+        tasks = data["nodes"]
 
-                hours = float(splitData[0])
-                minutes = float(splitData[1])
-                seconds = float(splitData[2])
+    for task in tasks:
+        splitData = tasks[task]["Data"].split(":")
 
-                ET[task] = hours*3600 + minutes*60 + seconds
-                D[task] = [str(fatherTask) for fatherTask in tasks[task]["Dependencies"]]
-                if len(D[task]) == 0:
-                    allowedTasks.add(task)
+        hours = float(splitData[0])
+        minutes = float(splitData[1])
+        seconds = float(splitData[2])
+
+        ET[task] = hours*3600 + minutes*60 + seconds
+        D[task] = [str(fatherTask) for fatherTask in tasks[task]["Dependencies"]]
+        if len(D[task]) == 0:
+            allowedTasks.add(task)
                 
     return ET, D, allowedTasks
 
