@@ -1,70 +1,116 @@
+import numpy as np
 import json
 import random
 
-def initialize(jsonName):
-    ET = {}
-    D = {}
-    allowedTasks = set()
-
-    with open("../data/" + jsonName, "r") as file:
+def initializeInputVariables(jsonName, numberOfProcessors):
+    with open("./src/data/" + jsonName + ".json", "r") as file:
         data = json.load(file)
         tasks = data["nodes"]
 
+    taskIdToTaskName = [task for task in tasks]
+
+    numberOfTasks = len(taskIdToTaskName)
+    ET = np.zeros(numberOfTasks)
+    D = np.zeros(numberOfTasks, dtype = object)
+    allowedTasks = set()
+
     for task in tasks:
-        splitData = tasks[task]["Data"].split(":")
+        splittedData = tasks[task]["Data"].split(":")
+        hours = float(splittedData[0])
+        minutes = float(splittedData[1])
+        seconds = float(splittedData[2])
 
-        hours = float(splitData[0])
-        minutes = float(splitData[1])
-        seconds = float(splitData[2])
+        taskId = taskIdToTaskName.index(task)
+        ET[taskId] = hours*3600 + minutes*60 + seconds
 
-        ET[task] = hours*3600 + minutes*60 + seconds
-        D[task] = [str(fatherTask) for fatherTask in tasks[task]["Dependencies"]]
-        if len(D[task]) == 0:
-            allowedTasks.add(task)
+        D[taskId] = [taskIdToTaskName.index(str(fatherTask)) for fatherTask in tasks[task]["Dependencies"]]
+        
+        if len(D[taskId]) == 0:
+            allowedTasks.add(taskId)
                 
-    return ET, D, allowedTasks
+    return ET, D, allowedTasks, taskIdToTaskName, numberOfTasks
 
-def selectTheNextMap(allowedTasks, numberOfProcessors):
+def initializeOutputVariables(numberOfProcessors, numberOfTasks):
+
+    processorInfoDict = {
+        "endTime": 0
+    }
+
+    taskInfoDict = {
+        "processor": None,
+        "startTime": None,
+        "endTime": None
+    }
+
+    mapInfo = []
+    processorInfo = [processorInfoDict for i in range(numberOfProcessors)]
+    taskInfo = [taskInfoDict for i in range(numberOfTasks)]
+
+    return mapInfo, processorInfo, taskInfo
+
+def selectTheNextMap(allowedTasks, processorInfo, strategy = "RTRP"):
     nextTask = random.choice(list(allowedTasks))
-    nextProcessor = random.choice(range(1, numberOfProcessors + 1))
+    nextProcessor = 0
+
+    if strategy == "RTRP":
+        nextProcessor = random.choice(range(len(processorInfo)))
+    elif strategy == "RTGP":
+        for processor in range(1, len(processorInfo)):
+            if processorInfo[processor]["endTime"] < processorInfo[nextProcessor]["endTime"]:
+                nextProcessor = processor
+    else:
+        raise Exception("ERROR: Strategy not supported!")
 
     return nextTask, nextProcessor
 
-def updateSolution(ET, D, nextTask, nextProcessor, x):
+def updateAllowedTasks(auxD, allowedTasks, lastTaskExecuted):
+    allowedTasks.remove(lastTaskExecuted)
+
+    for task in range(len(auxD)):
+        if lastTaskExecuted in auxD[task]:
+            auxD[task].remove(lastTaskExecuted)
+            if len(auxD[task]) == 0:
+                allowedTasks.add(task)
+
+def updateSolution(ET, D, nextTask, nextProcessor, mapInfo, processorInfo, taskInfo):
     startTime = 0
     endTime = 0
 
     for fatherTask in D[nextTask]:
-        for processor in x.keys():
-            if fatherTask in x[processor]["tasks"].keys():
-                if x[processor]["tasks"][fatherTask]["endTime"] > startTime:
-                    startTime = x[processor]["tasks"][fatherTask]["endTime"]
+        if taskInfo[fatherTask]["processor"]:
+            if taskInfo[fatherTask]["endTime"] > startTime:
+                startTime = taskInfo[fatherTask]["endTime"]
 
-    if x[nextProcessor]["time"] > startTime:
-        startTime = x[nextProcessor]["time"]
+    if processorInfo[nextProcessor]["endTime"] > startTime:
+        startTime = processorInfo[nextProcessor]["endTime"]
 
     endTime = startTime + ET[nextTask]
 
-    x[nextProcessor]["tasks"][nextTask] = {
+    mapInfo.append({
+        "processor": nextProcessor,
+        "task": nextTask,
+        "startTime": startTime,
+        "endTime": endTime
+    })
+
+    processorInfo[nextProcessor] = {
+        "endTime": endTime
+    }
+
+    taskInfo[nextTask] = {
+        "processor": nextProcessor,
         "startTime": startTime,
         "endTime": endTime
     }
 
-    x[nextProcessor]["time"] = endTime
-
-def updateAllowedTasks(auxD, allowedTasks, nextTask):
-    allowedTasks.remove(nextTask)
-
-    for task in auxD.keys():
-        if nextTask in auxD[task]:
-            auxD[task].remove(nextTask)
-            if len(auxD[task]) == 0:
-                allowedTasks.add(task)
-
-def costFunction(x):
+def costFunction(processorInfo):
     L = 0
-    for processor in x.keys():
-        if x[processor]["time"] > L:
-            L = x[processor]["time"]
+    for processor in processorInfo:
+        if processor["endTime"] > L:
+            L = processor["endTime"]
 
     return L
+
+def mapToTaskName(taskIdToTaskName, mapInfo):
+    for allocation in mapInfo:
+        allocation["task"] = taskIdToTaskName[allocation["task"]]
