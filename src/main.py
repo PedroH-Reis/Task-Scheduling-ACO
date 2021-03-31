@@ -32,6 +32,6 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
 	
     return x
 
-print(exec(r"./data/smallRandom.json", 15, range(1, 10), 10, 0.1, 0.1, 0.1))
+print(exec(r"./data/tasks.json", 15, range(1, 40), 10, 0.1, 0.1, 0.1))
 			
 			
