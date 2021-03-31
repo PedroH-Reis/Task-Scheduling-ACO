@@ -31,7 +31,9 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
                 
         update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos)
 	
-    return x
+    return L, x
 
 			
-			
+L, x = exec("./src/data/test_20.json", 10, [0, 1], 15, 0.3, 1, 0.4)
+
+print(L)

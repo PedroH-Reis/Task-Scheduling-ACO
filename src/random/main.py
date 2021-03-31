@@ -26,7 +26,7 @@ def exec(jsonName, numberOfProcessors, strategy = "RTRP"):
     mapToTaskName(taskIdToTaskName, mapInfo)
     return L, mapInfo, processorInfo, taskInfo
 
-L, mapInfo, processorInfo, taskInfo = exec("test", 2, strategy = "RTGP")
+L, mapInfo, processorInfo, taskInfo = exec("test_20", 2, strategy = "RTRP")
 
 print("Map Info")
 print(json.dumps(mapInfo, indent = 4))
