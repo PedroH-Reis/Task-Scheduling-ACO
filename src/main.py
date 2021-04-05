@@ -27,13 +27,13 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
             if antL < L:
                 x = copy.deepcopy(antX)
                 L = antL
-                # print(antL)
+                print(L)
                 
         update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos)
 	
     return L, x
 
 			
-L, x = exec("./src/data/test_20.json", 10, [0, 1], 15, 0.3, 1, 0.4)
+L, x = exec("./data/mediumRandom.json", 10, range(0,4), 15, 1, 5, 0.4)
 
 print(L)
