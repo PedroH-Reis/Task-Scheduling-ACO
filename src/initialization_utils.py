@@ -36,22 +36,25 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, processorList :
         sum_time += time
 
         for processor in processorList:
-            eta[task][processor] = (1/time)
+            eta[task][processor] = (len(tasks)/time)
             ET[task][processor] = time
             
         if(dependenciesCount[task] == 0):
             initialAllowed[task] = 0
-            
+        
+        if task not in D:
+            D[task] = []
+        
         for parent in Dp[task]:
             
             if(parent not in D):
                 D[parent] = []
             D[parent].append(task)
     
-    mean_time = sum_time/nTasks
+    mean_time = sum_time/len(processorList)
     
     initializationPheromone = {task: {processor:(1/mean_time) for processor in processorList} for task in tasks}
 
-    return (D, dependenciesCount ,ET, initialAllowed, nTasks,  eta, initializationPheromone, Dp)
+    return (D, dependenciesCount ,ET, initialAllowed, nTasks,  eta, initializationPheromone, Dp, mean_time)
 
-#(D, dependenciesCount ,ET, initialAllowed, nTasks,  eta, initializationPheromone, Dp) = initializeDependancyAndExecutionTimeMatrizes("data/smallRandom.json", range(1, 10))
+(D, dependenciesCount ,ET, initialAllowed, nTasks,  eta, initializationPheromone, Dp, mean_time) = initializeDependancyAndExecutionTimeMatrizes("data/tasks.json", range(1, 10))

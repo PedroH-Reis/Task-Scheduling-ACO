@@ -10,12 +10,13 @@ import numpy as np
 # PARAM: nextTask => The nextTask is the last task mapped
 # PARAM: allowed => The dictionnary to be actualized, contains task name -> (min) start time
 # PARAM: eta => eta parameter
-def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET):
+def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET, meanTime, eps = 10**(-9)):
     del allowed[nextTask]
     #before adding a task to the allowed vector, we have to update eta for the current allowed tasks according to the new end time of nextProcessor
     for task in allowed:
-        #We have to take into account the begin execution time for the tasks in allowed
-        eta[task][nextProcessor] = 1/(max(processorInfos[nextProcessor], allowed[task]) + ET[task][nextProcessor])
+        if not nextProcessor in eta[task]:            
+            #We have to take into account the begin execution time for the tasks in allowed
+            eta[task][nextProcessor] = meanTime/(processorInfos[nextProcessor] + eps)
 
     if nextTask in D:        
         for task in D[nextTask]:
@@ -31,7 +32,7 @@ def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, 
     
                     allowed[task] = beginTaskTime #we add the begin task time to the allowed vector
                     
-                    eta[task][processor]= 1/(max(processorInfos[processor], beginTaskTime) + ET[task][processor])
+                    eta[task][processor]= meanTime/(processorInfos[processor] + eps)
                     
 
 # Chooses a random initially allowed task and assigns it randomly to a processor
@@ -61,8 +62,8 @@ def initializeAnt(ET, allowedTasks, processorList):
 
     return taskId, processorId, antX, taskInfos, processorInfos
 
-#from initialization_utils import *
-#(taskId, processorId, antX, taskInfos, processorInfos) = initializeAnt(ET, initialAllowed, range(1, 10))
+from initialization_utils import *
+(taskId, processorId, antX, taskInfos, processorInfos) = initializeAnt(ET, initialAllowed, range(1, 10))
 
 
 # Calculates the maximum execution time between all processors.
@@ -84,16 +85,15 @@ def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, pr
     processors = processorInfos.keys()
     indexes = []
     probaInd = []
-
-    for task in allowed:
-        for processor in processors:
-            
-            indexes.append([task, processor])
-            proba = (pheromone[task][processor] ** alpha * eta[task][processor] ** beta) #Maybe we should normalize eta so that it doesn't become too small
-            probaInd.append(proba)
-
-    probaInd = np.array(probaInd)/(np.sum(probaInd))
+    
+    task = random.choices(list(allowed.keys()))[0]
+    
+    for processor in processors:
         
+        indexes.append([task, processor])
+        proba = (pheromone[task][processor] ** alpha * eta[task][processor] ** beta) 
+        probaInd.append(proba)
+
     nextTask, nextProcessor = random.choices(indexes, probaInd)[0]
 
     #We have to update the taskInfos and ProcessorInfos vectors
@@ -103,15 +103,16 @@ def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, pr
     
     return (nextTask, nextProcessor)
 
-def update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos):
+def update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos, meanTime, bonus = 1):
     pheromone_delta = {}
     for task in taskInfos:
         pheromone_delta[task] = {}
         for processor in processorInfos:
             if task in antX[processor]:
-                pheromone_delta[task][processor] = 1/L
+                pheromone_delta[task][processor] = bonus * meanTime/L
+
             else:
                 pheromone_delta[task][processor] = 0
                 
-            pheromone[task][processor] *= 1-rho
+            pheromone[task][processor] *= (1-rho)
             pheromone[task][processor] += rho * pheromone_delta[task][processor]

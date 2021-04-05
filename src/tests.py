@@ -1,4 +1,4 @@
-from functions import updateAllowedK
+from functions import *
 
 
 def TESTinitializeAnt():
