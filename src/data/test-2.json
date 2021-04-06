@@ -1,0 +1,120 @@
+{
+    "nodes": {
+      "0": {
+        "Data": "00:02:0.0",
+        "Dependencies": []
+      },
+      "1": {
+        "Data": "00:00:10.0",
+        "Dependencies": []
+      },
+      "2": {
+        "Data": "00:00:30.0",
+        "Dependencies": [
+          0
+        ]
+      },
+      "3": {
+        "Data": "00:00:1.0",
+        "Dependencies": [
+          0, 1
+        ]
+      },
+      "4": {
+        "Data": "00:02:30.0",
+        "Dependencies": [
+          1
+        ]
+      },
+      "5": {
+        "Data": "00:00:20.0",
+        "Dependencies": [
+          2, 3
+        ]
+      },
+      "6": {
+        "Data": "00:01:0.0",
+        "Dependencies": [
+          4
+        ]
+      },
+      "7": {
+        "Data": "00:00:5.0",
+        "Dependencies": [
+          5
+        ]
+      },
+      "8": {
+        "Data": "00:00:10.0",
+        "Dependencies": [
+          5
+        ]
+      },
+      "9": {
+        "Data": "00:00:40.0",
+        "Dependencies": [
+          4, 5
+        ]
+      },
+      "10": {
+        "Data": "00:00:10.0",
+        "Dependencies": [
+          7
+        ]
+      },
+      "11": {
+        "Data": "00:06:0.0",
+        "Dependencies": [
+          8
+        ]
+      },
+      "12": {
+        "Data": "00:03:20.0",
+        "Dependencies": [
+          8, 9
+        ]
+      },
+      "13": {
+        "Data": "00:00:2.0",
+        "Dependencies": [
+          9
+        ]
+      },
+      "14": {
+        "Data": "00:00:5.0",
+        "Dependencies": [
+          10, 11, 12
+        ]
+      },
+      "15": {
+        "Data": "00:00:5.0",
+        "Dependencies": [
+          14
+        ]
+      },
+      "16": {
+        "Data": "00:06:40.0",
+        "Dependencies": [
+          14
+        ]
+      },
+      "17": {
+        "Data": "00:00:20.0",
+        "Dependencies": [
+          15
+        ]
+      },
+      "18": {
+        "Data": "00:00:8.0",
+        "Dependencies": [
+          16
+        ]
+      },
+      "19": {
+        "Data": "00:00:10.0",
+        "Dependencies": [
+          13, 16
+        ]
+      } 
+    }
+  }
