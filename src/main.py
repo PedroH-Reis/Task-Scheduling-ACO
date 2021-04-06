@@ -3,7 +3,7 @@ from initialization_utils import initializeDependancyAndExecutionTimeMatrizes
 import copy
 from tqdm import tqdm
 
-def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho1, rho2):
+def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
     D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp, meanTime  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, processorList) # Matheus
     # The solution
     x = {}
@@ -19,7 +19,7 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho1, rho2
             updateVariables(ant_dependancies, taskId, processorId, allowed, eta, taskInfos, processorInfos, D, Dp, ET, meanTime)
 
             while len(allowed)>0 :
-                nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos, ET) # Theodore and Pedro
+                nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos, ET, iter, iterMax) # Theodore and Pedro
                 updateVariables(ant_dependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET, meanTime) # Theodore and Pedro
                 antX[nextProcessor].append(nextTask)
 
@@ -28,19 +28,16 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho1, rho2
                 x = copy.deepcopy(antX)
                 L = antL
                 print(L)
-                update_pheromone(pheromone, rho2, allowed, ET, L, x, taskInfos, processorInfos, meanTime, 1.5)
+                
+        update_pheromone(pheromone, rho, allowed, ET, L, x, taskInfos, processorInfos, meanTime)  
+        
 
-            update_pheromone(pheromone, rho1, allowed, ET, antL, antX, taskInfos, processorInfos, meanTime)  
-            
-
-        if rho1>0.4:    
-            rho1 *= 0.99
-        if rho2>0.6:    
-            rho2 *= 0.99
+        if rho<0.5:    
+            rho *= 1.01
         
 	
     return (x, L)
 
-print(exec(r"./data/mediumRandom.json", 10, range(0, 10), 50, 3, 5, 1, 1))
+print(exec(r"./data/mediumRandom.json", 200, range(0, 4), 10, 0.05, 2, 0.05))
 			
 			

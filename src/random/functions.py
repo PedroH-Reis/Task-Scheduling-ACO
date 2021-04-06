@@ -77,9 +77,8 @@ def updateSolution(ET, D, nextTask, nextProcessor, mapInfo, processorInfo, taskI
     endTime = 0
 
     for fatherTask in D[nextTask]:
-        if taskInfo[fatherTask]["processor"]:
-            if taskInfo[fatherTask]["endTime"] > startTime:
-                startTime = taskInfo[fatherTask]["endTime"]
+        if taskInfo[fatherTask]["endTime"] > startTime:
+            startTime = taskInfo[fatherTask]["endTime"]
 
     if processorInfo[nextProcessor]["endTime"] > startTime:
         startTime = processorInfo[nextProcessor]["endTime"]

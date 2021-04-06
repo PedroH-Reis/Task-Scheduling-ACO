@@ -36,7 +36,7 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, processorList :
         sum_time += time
 
         for processor in processorList:
-            eta[task][processor] = (len(tasks)/time)
+            eta[task][processor] = float("inf")
             ET[task][processor] = time
             
         if(dependenciesCount[task] == 0):
@@ -53,7 +53,7 @@ def initializeDependancyAndExecutionTimeMatrizes(jsonPath : str, processorList :
     
     mean_time = sum_time/len(processorList)
     
-    initializationPheromone = {task: {processor:(1/mean_time) for processor in processorList} for task in tasks}
+    initializationPheromone = {task: {processor:(1) for processor in processorList} for task in tasks}
 
     return (D, dependenciesCount ,ET, initialAllowed, nTasks,  eta, initializationPheromone, Dp, mean_time)
 

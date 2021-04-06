@@ -13,10 +13,9 @@ import numpy as np
 def updateVariables(howManyDependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET, meanTime, eps = 10**(-9)):
     del allowed[nextTask]
     #before adding a task to the allowed vector, we have to update eta for the current allowed tasks according to the new end time of nextProcessor
-    for task in allowed:
-        if not nextProcessor in eta[task]:            
-            #We have to take into account the begin execution time for the tasks in allowed
-            eta[task][nextProcessor] = meanTime/(processorInfos[nextProcessor] + eps)
+    for task in allowed:         
+        #We have to take into account the begin execution time for the tasks in allowed
+        eta[task][nextProcessor] = meanTime/(processorInfos[nextProcessor] + eps)
 
     if nextTask in D:        
         for task in D[nextTask]:
@@ -62,8 +61,6 @@ def initializeAnt(ET, allowedTasks, processorList):
 
     return taskId, processorId, antX, taskInfos, processorInfos
 
-from initialization_utils import *
-(taskId, processorId, antX, taskInfos, processorInfos) = initializeAnt(ET, initialAllowed, range(1, 10))
 
 
 # Calculates the maximum execution time between all processors.
@@ -81,21 +78,50 @@ def costFunction(processorInfos):
 # PARAM: allowed => A set that contains the next tasks that can be proceeded
 # PARAM: x => a dictionnary where the keys are the processors and the values the tasks that are executed on the processor
 
-def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos, ET):
+def activation(X, strategy = "argmax", min_pound = 1/4, max_pound = 3/4): #modified activation function : to allow modified random choice, min_pound & max_pound only for relu
+    
+    if strategy == "relu":
+        maxVal = np.max(X)
+        minVal = np.min(X)
+        
+        limit = minVal * min_pound + maxVal * max_pound #pounderation according to the maximum and mean values. enhances the convergence
+        
+        X = np.array(X)
+        
+        return np.where(X>=limit, X, X*(10**(-5))) #one can choose X/10**(5) as a minimum value
+
+    if strategy == "max":
+        maxVal = np.max(X)
+        
+        return np.where(X >= (maxVal-(10**(-8))), 1, 0)
+    
+def selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos, ET, iter, iterMax):
     processors = processorInfos.keys()
     indexes = []
     probaInd = []
     
-    task = random.choices(list(allowed.keys()))[0]
+    eps = 10**(-5)
     
+    beginTime = [1/(allowed[task]+eps) for task in allowed.keys()]
+    
+    task = random.choices(list(allowed.keys()), beginTime)[0]
+  
     for processor in processors:
         
         indexes.append([task, processor])
         proba = (pheromone[task][processor] ** alpha * eta[task][processor] ** beta) 
+        
         probaInd.append(proba)
+        
+           
+    if iter <= iterMax * 1/10: #at first we explore all the best solutions
+        Id = np.argmax(probaInd)
+        nextTask, nextProcessor = indexes[Id]
+        
+    else: #then we choose using an activation function
+        nextTask, nextProcessor = random.choices(indexes, activation(probaInd, "relu"))[0]
 
-    nextTask, nextProcessor = random.choices(indexes, probaInd)[0]
-
+    
     #We have to update the taskInfos and ProcessorInfos vectors
     taskInfos[nextTask] = {"start_time": (max(allowed[nextTask], processorInfos[nextProcessor])), "processor":nextProcessor}
     taskInfos[nextTask]["end_time"] = (taskInfos[nextTask]["start_time"] + ET[nextTask][nextProcessor])
@@ -109,10 +135,11 @@ def update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInf
         pheromone_delta[task] = {}
         for processor in processorInfos:
             if task in antX[processor]:
-                pheromone_delta[task][processor] = bonus * meanTime/L
+                pheromone_delta[task][processor] = bonus * meanTime*len(processorInfos)/L
 
             else:
                 pheromone_delta[task][processor] = 0
                 
             pheromone[task][processor] *= (1-rho)
             pheromone[task][processor] += rho * pheromone_delta[task][processor]
+            
