@@ -1,7 +1,7 @@
 from functions import *
 from initialization_utils import initializeDependancyAndExecutionTimeMatrizes
 import copy
-from tqdm import tqdm
+
 
 def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
     D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp, meanTime  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, processorList) # Matheus
