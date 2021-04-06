@@ -3,6 +3,7 @@ from initialization_utils import initializeDependancyAndExecutionTimeMatrizes
 import copy
 from tqdm import tqdm
 from mpi4py import MPI
+import time
 
 def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
     # Initializating MPI
@@ -53,6 +54,7 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
 	
     return (x, L)
 
+start = time.time()
 print(exec(r"./data/mediumRandom.json", 200, range(0, 4), 10, 0.05, 2, 0.05))
-			
-			
+end = time.time() - start
+print(end)
