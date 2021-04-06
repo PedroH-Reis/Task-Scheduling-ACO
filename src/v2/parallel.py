@@ -7,7 +7,7 @@ import numpy as np
 import copy
 import time
 
-jsonName = "./data/mediumRandom.json"
+jsonName = "./data/test-1.json"
 
 numberOfProcessors = 10
 numberOfIterations = 100
