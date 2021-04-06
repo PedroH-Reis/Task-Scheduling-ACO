@@ -79,10 +79,10 @@ if Me == 1:
     print("The makespan:", L)
     print("--- %s seconds ---", time.time() - startTime)
 
-    plt.plot(historicL)
-    plt.ylabel("Makespan")
-    plt.xlabel("Iteration")
-    plt.show()
+    # plt.plot(historicL)
+    # plt.ylabel("Makespan")
+    # plt.xlabel("Iteration")
+    # plt.show()
 
 
 # print("Map Info")
