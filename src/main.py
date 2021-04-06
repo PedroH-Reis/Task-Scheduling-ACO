@@ -45,7 +45,7 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
         if(rank == min_rank):
             update_pheromone(pheromone, rho, allowed, ET, L, x, taskInfos, processorInfos, meanTime)  
         pheromone = comm.bcast(pheromone, root = min_rank)
-        L = comm.bcast(L root = min_rank)
+        L = comm.bcast(L, root = min_rank)
         x = comm.bcast(x, root = min_rank)
         if rho<0.5:    
             rho *= 1.01
