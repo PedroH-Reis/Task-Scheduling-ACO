@@ -9,7 +9,7 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
-    print("Hello from {rank} of {size}".format(rank=rank, size=size))
+    print("Hello from {rank} of {size}".format(rank=rank+1, size=size))
     D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp, meanTime  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, processorList) # Matheus
     # The solution
     x = {}
@@ -45,6 +45,8 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
         if(rank == min_rank):
             update_pheromone(pheromone, rho, allowed, ET, L, x, taskInfos, processorInfos, meanTime)  
         pheromone = comm.bcast(pheromone, root = min_rank)
+        L = comm.bcast(L root = min_rank)
+        x = comm.bcast(x, root = min_rank)
         if rho<0.5:    
             rho *= 1.01
         
