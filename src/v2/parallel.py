@@ -3,15 +3,17 @@ from mpi4py import MPI
 from functions import *
 
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import copy
 import time
 
-jsonName = "mediumRandom.json"
+jsonName = "./data/mediumRandom.json"
 
 numberOfProcessors = 10
 numberOfIterations = 100
 numberOfAnts = 16
+
+
 
 alpha = 1.0
 beta = 5.0
@@ -22,6 +24,13 @@ comm = MPI.COMM_WORLD
 
 numberOfProcess = comm.Get_size()
 Me = comm.Get_rank()
+if Me == 1:
+    print('''
+        jsonName           = {jsonName},
+        numberOfProcessors = {numberOfProcessors},
+        numberOfIterations = {numberOfIterations},
+        numberOfAnts       = {numberOfAnts}
+    '''.format(jsonName=jsonName, numberOfProcessors= numberOfProcessors, numberOfIterations=numberOfIterations, numberOfAnts=numberOfAnts))
 
 startTime = time.time()
 
