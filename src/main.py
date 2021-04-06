@@ -40,7 +40,8 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
                 x = copy.deepcopy(antX)
                 L = antL
         
-        _, min_rank = comm.allreduce(L, op= MPI.MINLOC)
+        min_rank = comm.allreduce(L, op= MPI.MINLOC)
+        print(min_rank)
         if(rank == min_rank):
             update_pheromone(pheromone, rho, allowed, ET, L, x, taskInfos, processorInfos, meanTime)  
         pheromone = comm.broadcast(pheromone, root = min_rank)
