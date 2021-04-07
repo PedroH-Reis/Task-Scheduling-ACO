@@ -83,7 +83,7 @@ for i in range(numberOfIterations):
         historicL.append(L)
         pheromone = (1 - rho)*pheromone + rho*sumDeltaPheromone
 
-        comm.Bcast(pheromone, root = 1)
+        comm.Bcast(pheromone, root = 0)
 
 if Me == 0:
     print("The makespan:", L)
