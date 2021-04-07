@@ -7,7 +7,7 @@ import numpy as np
 import copy
 import time
 
-jsonName = "test-2.json"
+jsonName = "test-1.json"
 
 numberOfProcessors = 2
 numberOfIterations = 100
@@ -24,7 +24,7 @@ comm = MPI.COMM_WORLD
 
 numberOfProcess = comm.Get_size()
 Me = comm.Get_rank()
-if Me == 1:
+if Me == 0:
     print('''
         jsonName           = {jsonName},
         numberOfProcessors = {numberOfProcessors},
