@@ -9,7 +9,7 @@ import time
 
 jsonName = "xsmallComplex.json"
 
-numberOfProcessors = 2
+numberOfProcessors = 10
 numberOfIterations = 100
 numberOfAnts = 16
 
