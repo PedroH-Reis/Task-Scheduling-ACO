@@ -10,8 +10,8 @@ import time
 jsonName = "./data/test-1.json"
 
 numberOfProcessors = 10
-numberOfIterations = 100
-numberOfAnts = 16
+numberOfIterations = 1
+numberOfAnts = 1
 
 
 
