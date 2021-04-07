@@ -7,7 +7,7 @@ import numpy as np
 import copy
 import time
 
-jsonName = "xsmallComplex.json"
+jsonName = "mediumRandom.json"
 
 numberOfProcessors = 10
 numberOfIterations = 100
