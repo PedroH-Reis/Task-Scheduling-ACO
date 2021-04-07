@@ -7,9 +7,9 @@ import numpy as np
 import copy
 import time
 
-jsonName = "xsmallComplex.json"
+jsonName = "test-1.json"
 
-numberOfProcessors = 10
+numberOfProcessors = 2
 numberOfIterations = 100
 numberOfAnts = 16
 
