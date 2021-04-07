@@ -29,15 +29,16 @@ if Me == 1:
         jsonName           = {jsonName},
         numberOfProcessors = {numberOfProcessors},
         numberOfIterations = {numberOfIterations},
-        numberOfAnts       = {numberOfAnts}
-    '''.format(jsonName=jsonName, numberOfProcessors= numberOfProcessors, numberOfIterations=numberOfIterations, numberOfAnts=numberOfAnts))
+        numberOfAnts       = {numberOfAnts},
+        numberOfProcess    = {numberOfProcess}
+    '''.format(jsonName=jsonName, numberOfProcessors= numberOfProcessors, numberOfIterations=numberOfIterations, numberOfAnts=numberOfAnts, numberOfProcess=numberOfProcess))
 
 startTime = time.time()
 
 ET, D, initialAllowedTasks, taskIdToTaskName, numberOfTasks = initializeInputVariables(jsonName, numberOfProcessors)
 pheromone = np.full((numberOfProcessors, numberOfTasks), 1/np.mean(ET))
 
-if Me == 1:
+if Me == 0:
     x, mapInfo, processorInfo, taskInfo = initializeOutputVariables(numberOfProcessors, numberOfTasks)
     L = float("inf")
     historicL = []
@@ -71,11 +72,11 @@ for i in range(numberOfIterations):
         if newAntL < antL:
             antL = newAntL
 
-    minAntL = comm.reduce(antL, op = MPI.MIN, root = 1)
+    minAntL = comm.reduce(antL, op = MPI.MIN, root = 0)
 
-    comm.Reduce(deltaPheromone, sumDeltaPheromone, op = MPI.SUM, root = 1)
+    comm.Reduce(deltaPheromone, sumDeltaPheromone, op = MPI.SUM, root = 0)
 
-    if Me == 1:
+    if Me == 0:
         if minAntL < L:
             L = minAntL
         
@@ -84,7 +85,7 @@ for i in range(numberOfIterations):
 
         comm.Bcast(pheromone, root = 1)
 
-if Me == 1:
+if Me == 0:
     print("The makespan:", L)
     print("--- %s seconds ---", time.time() - startTime)
 
