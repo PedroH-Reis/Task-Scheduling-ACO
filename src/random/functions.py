@@ -1,9 +1,10 @@
 import numpy as np
+
 import json
 import random
 
 def initializeInputVariables(jsonName, numberOfProcessors):
-    with open("./src/data/" + jsonName + ".json", "r") as file:
+    with open("./src/data/" + jsonName, "r") as file:
         data = json.load(file)
         tasks = data["nodes"]
 
@@ -77,9 +78,8 @@ def updateSolution(ET, D, nextTask, nextProcessor, mapInfo, processorInfo, taskI
     endTime = 0
 
     for fatherTask in D[nextTask]:
-        if taskInfo[fatherTask]["processor"]:
-            if taskInfo[fatherTask]["endTime"] > startTime:
-                startTime = taskInfo[fatherTask]["endTime"]
+        if taskInfo[fatherTask]["endTime"] > startTime:
+            startTime = taskInfo[fatherTask]["endTime"]
 
     if processorInfo[nextProcessor]["endTime"] > startTime:
         startTime = processorInfo[nextProcessor]["endTime"]
@@ -114,3 +114,4 @@ def costFunction(processorInfo):
 def mapToTaskName(taskIdToTaskName, mapInfo):
     for allocation in mapInfo:
         allocation["task"] = taskIdToTaskName[allocation["task"]]
+        
