@@ -10,7 +10,7 @@ import time
 jsonName = "largeComplex.json"
 
 numberOfProcessors = 10
-numberOfIterations = 100
+numberOfIterations = 50
 numberOfAnts = 256
 
 
