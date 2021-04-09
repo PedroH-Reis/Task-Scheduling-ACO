@@ -22,7 +22,11 @@ def exec(jsonName, numberOfProcessors, strategy = "RTRP", manual = False):
 
     return L, mapInfo, processorInfo, taskInfo
 
+<<<<<<< HEAD
+L, mapInfo, processorInfo, taskInfo = exec("mediumRandom", 4, strategy = "RTRP")
+=======
 # L, mapInfo, processorInfo, taskInfo = exec("test-1.json", 2, strategy = "RTGP", manual = False)
+>>>>>>> 013e142a6658a607ba5dcd7822e94843f8c3bb99
 
 # print("The makespan:", L)
 

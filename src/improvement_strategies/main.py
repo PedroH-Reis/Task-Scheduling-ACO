@@ -4,7 +4,7 @@ import copy
 from tqdm import tqdm
 
 def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
-    D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, processorList) # Matheus
+    D, howManyDependancies, ET, initialAllowed, numberOfTasks, eta, pheromone, Dp, meanTime  = initializeDependancyAndExecutionTimeMatrizes(jsonPath, processorList) # Matheus
     # The solution
     x = {}
     for processors in processorList:
@@ -16,11 +16,11 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
             allowed = copy.deepcopy(initialAllowed)
             ant_dependancies = copy.deepcopy(howManyDependancies)
             taskId, processorId, antX, taskInfos, processorInfos = initializeAnt(ET, allowed, processorList) # Eylul
-            updateVariables(ant_dependancies, taskId, processorId, allowed, eta, taskInfos, processorInfos, D, Dp, ET)
+            updateVariables(ant_dependancies, taskId, processorId, allowed, eta, taskInfos, processorInfos, D, Dp, ET, meanTime)
 
             while len(allowed)>0 :
-                nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos, ET) # Theodore and Pedro
-                updateVariables(ant_dependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET) # Theodore and Pedro
+                nextTask, nextProcessor = selectTheNextRoute(eta, alpha, pheromone, beta, allowed, antX, taskInfos, processorInfos, ET, iter, iterMax) # Theodore and Pedro
+                updateVariables(ant_dependancies, nextTask, nextProcessor, allowed, eta, taskInfos, processorInfos, D, Dp, ET, meanTime) # Theodore and Pedro
                 antX[nextProcessor].append(nextTask)
 
             antL = costFunction(processorInfos) # Eylul
@@ -29,11 +29,15 @@ def exec(jsonPath, numberOfAnts, processorList, iterMax, alpha, beta, rho):
                 L = antL
                 print(L)
                 
-        update_pheromone(pheromone, rho, allowed, ET,L,antX, taskInfos, processorInfos)
+        update_pheromone(pheromone, rho, allowed, ET, L, x, taskInfos, processorInfos, meanTime)  
+        
+
+        if rho<0.5:    
+            rho *= 1.01
+        
 	
-    return L, x
+    return (x, L)
 
+print(exec(r"./src/data/smallComplex.json", 200, range(0, 10), 10, 1, 5, 0.05))
 			
-L, x = exec("./data/mediumRandom.json", 10, range(0,4), 15, 1, 5, 0.4)
-
-print(L)
+			
