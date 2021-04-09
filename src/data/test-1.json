@@ -1,0 +1,38 @@
+{
+    "nodes": {
+        "0": {
+            "Data": "00:00:10.0",
+            "Dependencies": []
+        },
+        "1": {
+            "Data": "00:00:40.0",
+            "Dependencies": [
+                0
+            ]
+        },
+        "2": {
+            "Data": "00:00:5.0",
+            "Dependencies": [
+                0
+            ]
+        },
+        "3": {
+            "Data": "00:00:20.0",
+            "Dependencies": [
+                1
+            ]
+        },
+        "4": {
+            "Data": "00:00:30.0",
+            "Dependencies": [
+                1, 2
+            ]
+        },
+        "5": {
+            "Data": "00:00:10.0",
+            "Dependencies": [
+                2
+            ]
+        }
+    }
+}
